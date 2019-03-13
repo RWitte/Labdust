@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
 
 import numpy as np
 import cv2
 import glob as glob
+import imageio
 
 ### Input folder, "r" for raw string, , load in .TIF files, replace "\" with "/"
-folder = r"C:\Users\Robert\Desktop\labdust-gan\151130-AY-artifacts-4x-dapi-gfp-tritc-cy5_Plate_1935\TimePoint_1"
+folder = r"C:\Users\RobertWi\Google Drive\labdust-gan\151130-AY-artifacts-10x-dapi-gfp-tritc-cy5_Plate_1934\TimePoint_1"
 folder += r"\*.TIF"
 folder = folder.replace("\\", "/")
 
@@ -27,6 +23,14 @@ for myFile in files:
 ###x = np.zeros((np.array(images).shape[0],np.array(images).shape[1],np.array(images).shape[2]))
 
 images = np.array(images)
+
+### slice images
+
+slices = blockwise_view(image, blockshape = (100,100), require_aligned_blocks = False)
+
+for i in slices:
+    for n in slices:
+        print(i)
 
 """
 ###Look at images
