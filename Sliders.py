@@ -8,11 +8,11 @@ from matplotlib import pyplot as plt
 from PIL import Image
 
 ### Input folder, "r" for raw string, , load in .TIF files, replace "\" with "/"
-folder = r"C:\Users\Robert\Desktop\TimePoint_1"
+folder = r"C:\Users\RobertWi\Desktop\151130-AY-artifacts-10x-dapi-gfp-tritc-cy5_Plate_1934\TimePoint_1"
 folder += r"\*.TIF"
 folder = folder.replace("\\", "/")
 
-### Read images.
+### Read images from folder, subfolder reading not yet implemented
 
 images = []
 files = glob.iglob(folder)
@@ -51,6 +51,6 @@ for i in range (0,image_num):
             img = Image.fromarray(image_array[i, j, k])
             img.save(str(i+1) + "_" + str(j+1) + "_" + str(k+1) + ".TIF")
 """
-
+#Convert from 5D (Image, row, column x, y) to 3D (Image, x,y), normalize x/y values to [0,1]
 dataset = image_array.reshape(-1,x_len,y_len)
 dataset_norm = (dataset-np.min(dataset))/np.ptp(dataset)

@@ -7,6 +7,9 @@ from blockwise_view import blockwise_view
 from matplotlib import pyplot as plt
 from PIL import Image
 
+import os
+import platform
+
 def sliders(folder, x_len = 100, y_len = 200):
 ### Input folder, "r" for raw string, , load in .TIF files, replace "\" with "/"
     folder = folder.replace("\\", "/")
@@ -52,3 +55,4 @@ for i in range (0,image_num):
             img.save(str(i+1) + "_" + str(j+1) + "_" + str(k+1) + ".TIF")
 """
 
+dataset_norm = sliders(r"C:\Users\RobertWi\Desktop\151130-AY-artifacts-10x-dapi-gfp-tritc-cy5_Plate_1934\TimePoint_1",100,100)
