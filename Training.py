@@ -14,12 +14,14 @@ from keras.models import Model, Sequential
 from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D, Flatten, Reshape
 from keras import regularizers
 from sklearn.model_selection import train_test_split
-
+from keras import backend as K
+### Clear former model
+#K.clear_session()
 ### Calls the sliders function to read folder of .TIF images, make subslices of y/x dimension 
 ### and generates a 3D array of Image#, x/y values normalized to [0,1]
 
-folder = r"C:\Users\Robert\Desktop\labdust-gan\151130-AY-artifacts-10x-dapi-gfp-tritc-cy5_Plate_1934\TimePoint_1"
-dataset_norm = sliders(folder, 100,100)
+folder = r"C:\Users\Robert\Desktop\TimePoint_1\w1"
+dataset_norm = sliders(folder, 200,200)
 
 x_train, x_test = train_test_split(dataset_norm, test_size=0.2, random_state=1)
 
@@ -34,6 +36,9 @@ encoding_dim = 400
 
 compression_factor = float(input_dim) / encoding_dim
 print("Compression factor: %s" % compression_factor)
+
+
+
 
 ### Single Lay Encoder starts here
 """ 
@@ -126,8 +131,8 @@ encoder.summary()
 
 autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
 autoencoder.fit(x_train, x_train,
-                epochs=20,
-                batch_size=100,
+                epochs=10,
+                batch_size=50,
                 validation_data=(x_test, x_test))
 
 ### Plot DA results
@@ -144,21 +149,21 @@ plt.figure(figsize=(18, 4))
 for i, image_idx in enumerate(random_test_images):
     # plot original image
     ax = plt.subplot(3, num_images, i + 1)
-    plt.imshow(x_test[image_idx].reshape(100, 100))
+    plt.imshow(x_test[image_idx].reshape(np.array(dataset_norm).shape[1], np.array(dataset_norm).shape[2]))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     
     # plot encoded image
     ax = plt.subplot(3, num_images, num_images + i + 1)
-    plt.imshow(encoded_imgs[image_idx].reshape(20, 20))
+    plt.imshow(encoded_imgs[image_idx].reshape(int((encoding_dim**0.5)), int((encoding_dim**0.5))))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
     # plot reconstructed image
     ax = plt.subplot(3, num_images, 2*num_images + i + 1)
-    plt.imshow(decoded_imgs[image_idx].reshape(100, 100))
+    plt.imshow(decoded_imgs[image_idx].reshape(np.array(dataset_norm).shape[1], np.array(dataset_norm).shape[2]))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
