@@ -3,14 +3,17 @@
 import numpy as np
 import cv2
 import glob as glob
-from blockwise_view import blockwise_view
+from blockwise_view2 import blockwise_view
 from matplotlib import pyplot as plt
 from PIL import Image
 
 ### Input folder, "r" for raw string, , load in .TIF files, replace "\" with "/"
-folder = r"C:\Users\RobertWi\Desktop\151130-AY-artifacts-10x-dapi-gfp-tritc-cy5_Plate_1934\TimePoint_1"
+folder = r"C:\Users\Robert\Desktop\labdust-gan\151130-AY-artifacts-4x-dapi-gfp-tritc-cy5_Plate_1935\TimePoint_1"
 folder += r"\*.TIF"
 folder = folder.replace("\\", "/")
+crop_to = 3000
+x_len = 100
+y_len = 100    
 
 ### Read images from folder, subfolder reading not yet implemented
 
@@ -19,18 +22,22 @@ files = glob.iglob(folder)
 for myFile in files:
     image = cv2.imread(myFile, -1)
     image = image.astype(float)
+    # Crop to innermost 1000x1000 px
+    if crop_to != 0:
+        if crop_to > min(np.shape(image)[0],np.shape(image)[1]):
+            crop_to = min(np.shape(image)[0],np.shape(image)[1])
+        image = image[int(((np.shape(image)[0])/2)-int(crop_to/2)):int(((np.shape(image)[0])/2)+int(crop_to/2)),
+                      int(((np.shape(image)[1])/2)-int(crop_to/2)):int(((np.shape(image)[1])/2)+int(crop_to/2))]
+        
     images.append(image)
     
 #print('Array shape:', np.array(images).shape)
 
 ### slice images, blockshape in y/x dimensionality, generation of 5D array (image #, row #, column #, x coordinates, y coordinates)
 
-x_len = 100
-y_len = 100    
-
 slices = []
 for i in range(0, len(images)):
-    slice = blockwise_view(images[i], blockshape = (x_len,y_len), require_aligned_blocks = False)
+    slice = blockwise_view(images[i], blockshape = (x_len,y_len))
     slices.append(slice)
 
 image_array = np.array(slices)

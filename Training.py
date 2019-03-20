@@ -15,13 +15,19 @@ from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D, Flatt
 from keras import regularizers
 from sklearn.model_selection import train_test_split
 from keras import backend as K
+
 ### Clear former model
 #K.clear_session()
-### Calls the sliders function to read folder of .TIF images, make subslices of y/x dimension 
+### Calls the sliders function to read folder of .TIF images, make subslices of y, x px length,
+### crops to x px (0 for no cropping)
 ### and generates a 3D array of Image#, x/y values normalized to [0,1]
 
-folder = r"C:\Users\Robert\Desktop\TimePoint_1\w1"
-dataset_norm = sliders(folder, 200,200)
+x_len = 100
+y_len = 100
+crop_to = 1000
+folder = r"E:\Nuclei_Robert"
+
+dataset_norm = sliders(folder, x_len, y_len, crop_to)
 
 x_train, x_test = train_test_split(dataset_norm, test_size=0.2, random_state=1)
 
@@ -36,9 +42,6 @@ encoding_dim = 400
 
 compression_factor = float(input_dim) / encoding_dim
 print("Compression factor: %s" % compression_factor)
-
-
-
 
 ### Single Lay Encoder starts here
 """ 
