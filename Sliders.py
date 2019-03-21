@@ -8,10 +8,10 @@ from matplotlib import pyplot as plt
 from PIL import Image
 
 ### Input folder, "r" for raw string, , load in .TIF files, replace "\" with "/"
-folder = r"C:\Users\Robert\Desktop\labdust-gan\151130-AY-artifacts-4x-dapi-gfp-tritc-cy5_Plate_1935\TimePoint_1"
+folder = r"C:\Users\Robert\Desktop\TimePoint_1\w1"
 folder += r"\*.TIF"
 folder = folder.replace("\\", "/")
-crop_to = 3000
+crop_to = 1000
 x_len = 100
 y_len = 100    
 

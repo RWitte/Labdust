@@ -27,7 +27,7 @@ y_len = 100
 crop_to = 1000
 folder = r"E:\Nuclei_Robert"
 
-dataset_norm = sliders(folder, x_len, y_len, crop_to)
+dataset_norm = sliders(folder, crop_to, x_len, y_len)
 
 x_train, x_test = train_test_split(dataset_norm, test_size=0.2, random_state=1)
 
@@ -135,7 +135,7 @@ encoder.summary()
 autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
 autoencoder.fit(x_train, x_train,
                 epochs=10,
-                batch_size=50,
+                batch_size=500,
                 validation_data=(x_test, x_test))
 
 ### Plot DA results
@@ -152,7 +152,8 @@ plt.figure(figsize=(18, 4))
 for i, image_idx in enumerate(random_test_images):
     # plot original image
     ax = plt.subplot(3, num_images, i + 1)
-    plt.imshow(x_test[image_idx].reshape(np.array(dataset_norm).shape[1], np.array(dataset_norm).shape[2]))
+#    plt.imshow(x_test[image_idx].reshape(np.array(dataset_norm).shape[1], np.array(dataset_norm).shape[2]))
+    plt.imshow(x_test[image_idx].reshape(100, 100))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
