@@ -25,14 +25,26 @@ K.clear_session()
 ### crops to x px (0 for no cropping)
 ### and generates a 3D array of Image#, x/y values normalized to [0,1]
 
-folder = r"E:\Nuclei_Robert"
+folder = r"C:\Users\RobertWi\Desktop\151130-AY-artifacts-10x-dapi-gfp-tritc-cy5_Plate_1934\TimePoint_1"
 crop_to = 1000
 x_len = 100
 y_len = 100
 
-dataset = sliders(folder, crop_to, x_len, y_len,20)
+dataset = sliders(folder, crop_to, x_len, y_len,2)
+
+#Add channel dimensions, 3D version
+def datasetRGB(x):
+    x_empty = np.empty((x.shape[0], x.shape[1], x.shape[2], 3), dtype=np.uint8)
+    x_empty[:, :, :, 2] = x_empty[:, :, :, 1] = x_empty[:, :, :, 0] = x
+    return(x_empty)
+    
+dataset = datasetRGB(dataset)
+
+#1D version
+#dataset = np.reshape(dataset, (dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
+
+#Normalization to [0,1]
 dataset = ((dataset-np.min(dataset))/np.ptp(dataset)).astype('float16')
-dataset = np.reshape(dataset, (dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
 x_train, x_test = train_test_split(dataset, test_size=0.2, random_state=1)
 
 #x_train = x_train.reshape(-1,(len(x_train), np.prod(x_train.shape[1:])),1)
@@ -40,14 +52,11 @@ x_train, x_test = train_test_split(dataset, test_size=0.2, random_state=1)
 #input_shape = x_train.shape[1]
 #print((x_train.shape, x_test.shape))
 
-encoding_dim = 128
-#input_dim = 2500
-
 model = Sequential()
 
 #Encoder Layer
-#model.add(Conv2D(1, (3, 3),input_shape=(100, 100, 1),data_format='channels_last', padding='same',))
-#model.add(MaxPooling2D(pool_size=(2, 2),input_shape=(100, 100, 1)))
+model.add(Conv2D(64, (3, 3),data_format='channels_last', padding='same',))
+#model.add(MaxPooling2D(pool_size=(2, 2), input_shape=(32,32,1)))
 #model.add(Dropout(0.25))
 #model.add(Flatten())
 #
@@ -60,24 +69,23 @@ model = Sequential()
 #model.add(Dense((2*encoding_dim), activation='relu'))
 #model.add(Dense((4*encoding_dim), activation='relu'))
 #model.add(Dense(10000, activation='sigmoid'))
-
-model.summary()
 #
-#input_img = Input((100,100,1))
+#model.summary()
+#
+#
+#input_img = Input(shape=(2500,))
 #encoder_layer1 = model.layers[4]
 #encoder_layer2 = model.layers[5]
 #encoder_layer3 = model.layers[6]
 #encoder = Model(input_img, encoder_layer3(encoder_layer2(encoder_layer1(input_img))))
 #
 #encoder.summary()
-
-model.compile(optimizer='adam', loss='binary_crossentropy')
+#
+model.compile(optimizer='adam', loss='mean_squared_error')
 model.fit(x_train, x_train,
                 epochs=50,
                 batch_size=256,
                 validation_data=(x_test, x_test))
-
-
 
 
 ### Single Lay Encoder starts here

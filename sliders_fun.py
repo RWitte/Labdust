@@ -25,7 +25,7 @@ def sliders(folder, crop_to = 1000, x_len = 100, y_len = 100, num = None):
                 crop_to = min(np.shape(image)[0],np.shape(image)[1])
             image = image[int(((np.shape(image)[0])/2)-int(crop_to/2)):int(((np.shape(image)[0])/2)+int(crop_to/2)),
                           int(((np.shape(image)[1])/2)-int(crop_to/2)):int(((np.shape(image)[1])/2)+int(crop_to/2))]
-        
+             
         images.append(image.astype("uint8"))
     
 #print('Array shape:', np.array(images).shape)
