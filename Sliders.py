@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from PIL import Image
 
 ### Input folder, "r" for raw string, , load in .TIF files, replace "\" with "/"
-folder = r"C:\Users\Robert\Desktop\TimePoint_1\w1"
+folder = r"C:\Users\Robert\Desktop\New folder"
 folder += r"\*.TIF"
 folder = folder.replace("\\", "/")
 crop_to = 1000
@@ -18,8 +18,8 @@ y_len = 100
 ### Read images from folder, subfolder reading not yet implemented
 
 images = []
-files = glob.iglob(folder)
-for myFile in files:
+files = glob.glob(folder)
+for myFile in files[:3]:
     image = cv2.imread(myFile, -1)
     image = image.astype(float)
     # Crop to innermost 1000x1000 px

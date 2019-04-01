@@ -1,7 +1,6 @@
 """
 Autoencoder setup based on: https://ramhiser.com/post/2018-05-14-autoencoders-with-keras/
 """
-
 from sliders_fun import sliders
 
 from IPython.display import Image, SVG
@@ -11,10 +10,14 @@ import numpy as np
 import keras
 from keras.datasets import mnist
 from keras.models import Model, Sequential
-from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D, Flatten, Reshape
+from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D, Flatten, Reshape, Activation, Dropout
 from keras import regularizers
 from sklearn.model_selection import train_test_split
 from keras import backend as K
+import tensorflow as tf
+
+K.clear_session()
+
 
 ### Clear former model
 #K.clear_session()
@@ -22,26 +25,60 @@ from keras import backend as K
 ### crops to x px (0 for no cropping)
 ### and generates a 3D array of Image#, x/y values normalized to [0,1]
 
+folder = r"E:\Nuclei_Robert"
+crop_to = 1000
 x_len = 100
 y_len = 100
-crop_to = 1000
-folder = r"E:\Nuclei_Robert"
 
-dataset_norm = sliders(folder, crop_to, x_len, y_len)
+dataset = sliders(folder, crop_to, x_len, y_len,20)
+dataset = ((dataset-np.min(dataset))/np.ptp(dataset)).astype('float16')
+dataset = np.reshape(dataset, (dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
+x_train, x_test = train_test_split(dataset, test_size=0.2, random_state=1)
 
-x_train, x_test = train_test_split(dataset_norm, test_size=0.2, random_state=1)
+#x_train = x_train.reshape(-1,(len(x_train), np.prod(x_train.shape[1:])),1)
+#x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
+#input_shape = x_train.shape[1]
+#print((x_train.shape, x_test.shape))
 
-x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:])))
-x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
-input_shape = x_train.shape[1]
-print((x_train.shape, x_test.shape))
+encoding_dim = 128
+#input_dim = 2500
+
+model = Sequential()
+
+#Encoder Layer
+#model.add(Conv2D(1, (3, 3),input_shape=(100, 100, 1),data_format='channels_last', padding='same',))
+#model.add(MaxPooling2D(pool_size=(2, 2),input_shape=(100, 100, 1)))
+#model.add(Dropout(0.25))
+#model.add(Flatten())
+#
+#model.add(Dense((4*encoding_dim), activation = 'relu'))
+#model.add(Dense((2*encoding_dim), activation = 'relu'))
+#model.add(Dense((encoding_dim), activation = 'relu'))
+#
+##Decoder Layer
+#
+#model.add(Dense((2*encoding_dim), activation='relu'))
+#model.add(Dense((4*encoding_dim), activation='relu'))
+#model.add(Dense(10000, activation='sigmoid'))
+
+model.summary()
+#
+#input_img = Input((100,100,1))
+#encoder_layer1 = model.layers[4]
+#encoder_layer2 = model.layers[5]
+#encoder_layer3 = model.layers[6]
+#encoder = Model(input_img, encoder_layer3(encoder_layer2(encoder_layer1(input_img))))
+#
+#encoder.summary()
+
+model.compile(optimizer='adam', loss='binary_crossentropy')
+model.fit(x_train, x_train,
+                epochs=50,
+                batch_size=256,
+                validation_data=(x_test, x_test))
 
 
-input_dim = x_train.shape[1]
-encoding_dim = 400
 
-compression_factor = float(input_dim) / encoding_dim
-print("Compression factor: %s" % compression_factor)
 
 ### Single Lay Encoder starts here
 """ 
@@ -105,7 +142,7 @@ plt.show()
 
 """
 ### Single Layer Encoder ends here
-
+"""
 ### Deep Autoencoder starts here
 
 autoencoder = Sequential()
@@ -174,3 +211,4 @@ for i, image_idx in enumerate(random_test_images):
 plt.show()
 
 ### Deep Autoencoder ends here
+"""
