@@ -22,7 +22,7 @@ K.clear_session()
 ### crops to x px (0 for no cropping)
 ### and generates a 3D array of Image#, x/y values normalized to [0,1]
 
-folder = r"C:\Users\RobertWi\Desktop\151130-AY-artifacts-10x-dapi-gfp-tritc-cy5_Plate_1934\TimePoint_1"
+folder = r"C:\Users\Robert\Documents\GitHub\Labdust\TimePoint_1"
 crop_to = 1000
 x_len = 101
 y_len = 101
